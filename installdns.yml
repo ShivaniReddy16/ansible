@@ -1,0 +1,12 @@
+- name: Install DNS
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install DNS
+      win_feature:
+        name: "DNS"
+        state: present
+        restart: yes
+        include_sub_features: yes
+        include_management_tools: yes
+

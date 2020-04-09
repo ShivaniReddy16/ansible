@@ -1,0 +1,35 @@
+---
+- name: playbook for create a  user
+  hosts: windows 
+  tasks:
+    - name: Ensure user IIS is created and use custom credentials to create the user
+      win_domain_user:
+        name: iis_admin
+        password: Nodeuser@1234
+        state: present
+        domain_username: domainactive\node1
+        domain_password: Domain@1234
+        domain_server: node1.domainactive.com
+    - name: allow remote access to IIS
+      win_group_membership:
+        name: Administrators
+        members:
+             - domainactive\iis_admin
+        state: present
+
+    - name: creating file
+      win_file:
+        path: C:\Inetpub\wwwroot
+        state: directory
+    - name: copying from master to node
+      win_copy:
+        src: /etc/ansible/source
+        dest: C:\Inetpub\wwwroot\
+
+    - name: Set the owner of root directory
+      win_owner:
+        path: C:\Inetpub\wwwroot\
+        user: domainactive\IIs_admin
+        recurse: yes
+
+
